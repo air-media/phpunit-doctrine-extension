@@ -65,13 +65,12 @@ class RepositoryTestCase extends ORMTestCase
     
     protected function createMappingDriver(Configuration $config): MappingDriver
     {
+        $annotationDriver = $config->newDefaultAnnotationDriver([
+            realpath(__DIR__ . '/../src/Entity'),
+        ], false);
+        
         $driver = new MappingDriverChain();
-        $driver->addDriver(
-            $config->newDefaultAnnotationDriver([
-                realpath(__DIR__ . '/../src/Entity'),
-            ], false),
-            'Acme\Entity'
-        );
+        $driver->addDriver($annotationDriver, 'Acme\Entity');
 
         return $driver;
     }

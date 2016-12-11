@@ -30,6 +30,8 @@ For work with PostgreSQL you need to modify your configuration file
     </php>
 ```
 
+If these options are missing then will be used driver for SQLite as the fallback.
+
 ## Usage
 
 You must inherit from `AirMedia\Test\OrmTestCase` and implement `createMappingDriver`

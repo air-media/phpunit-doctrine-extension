@@ -1,0 +1,28 @@
+{
+  "name": "airmedia/phpunit-doctrine-extension",
+  "description": "Provides the base TestCase for functional ORM/DB tests.",
+  "keywords": ["database", "testing", "phpunit"],
+  "license": "MIT",
+  "type": "library",
+  "autoload": {
+    "psr-4": { "AirMedia\\Test\\": "src" }
+  },
+  "require": {
+    "php": "^7.0",
+    "phpunit/phpunit": "~5.0",
+    "doctrine/orm": "~2.3"
+  },
+  "require-dev": {
+    "airmedia/php-cs-fixer-config": "^0.2.0",
+    "doctrine/data-fixtures": "^1.2",
+    "phpunit/dbunit": "^2.0"
+  },
+  "suggest": {
+    "doctrine/data-fixtures": "For loading ORM fixtures",
+    "phpunit/dbunit": "To use DBUnitTrait"
+  },
+  "scripts": {
+    "cs-check": "php-cs-fixer fix -v --diff --dry-run",
+    "cs-fix": "php-cs-fixer fix -v --diff"
+  }
+}

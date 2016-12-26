@@ -8,14 +8,12 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\DBAL\Logging\SQLLogger;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -33,13 +31,6 @@ abstract class ORMTestCase extends TestCase
      * @var array
      */
     protected static $customTypes = [];
-
-    /**
-     * Whether the database schema is initialized.
-     *
-     * @var bool
-     */
-    private static $initialized = false;
 
     /**
      * @var Connection|null
@@ -82,8 +73,6 @@ abstract class ORMTestCase extends TestCase
                 }
             }
         }
-
-        self::$initialized = false;
     }
 
     abstract protected function createMappingDriver(Configuration $config): MappingDriver;
@@ -212,13 +201,14 @@ abstract class ORMTestCase extends TestCase
             $config->setQueryCacheImpl(self::$queryCacheImpl);
             $config->setMetadataDriverImpl($this->createMappingDriver($config));
 
-            $em = EntityManager::create($this->getConnectionParams(), $config);
+            $em = EntityManager::create(DatabaseUtil::getConnectionParams(), $config);
             self::$sharedConn = $em->getConnection();
         }
 
         $em->getConfiguration()->setSQLLogger($logger);
 
-        $this->initDatabase($em);
+        DatabaseUtil::initDatabase();
+        DatabaseUtil::setUpSchema($em);
 
         if (is_array(static::$customTypes) && count(static::$customTypes) > 0) {
             $platform = $em->getConnection()->getDatabasePlatform();
@@ -229,88 +219,5 @@ abstract class ORMTestCase extends TestCase
         }
 
         return $em;
-    }
-
-    private function getConnectionParams()
-    {
-        if (isset(
-            $GLOBALS['db_type'],
-            $GLOBALS['db_username'],
-            $GLOBALS['db_password'],
-            $GLOBALS['db_host'],
-            $GLOBALS['db_name'],
-            $GLOBALS['db_port']
-        )) {
-            $params = [
-                'driver' => $GLOBALS['db_type'],
-                'user' => $GLOBALS['db_username'],
-                'password' => $GLOBALS['db_password'],
-                'host' => $GLOBALS['db_host'],
-                'dbname' => $GLOBALS['db_name'],
-                'port' => $GLOBALS['db_port'],
-            ];
-
-            if (isset($GLOBALS['db_server'])) {
-                $params['server'] = $GLOBALS['db_server'];
-            }
-
-            if (isset($GLOBALS['db_unix_socket'])) {
-                $params['unix_socket'] = $GLOBALS['db_unix_socket'];
-            }
-
-            return $params;
-        }
-
-        $params = [
-            'driver' => 'pdo_sqlite',
-            'memory' => true,
-        ];
-
-        if (isset($GLOBALS['db_path'])) {
-            $params['path'] = $GLOBALS['db_path'];
-            unlink($GLOBALS['db_path']);
-        }
-
-        return $params;
-    }
-
-    private function initDatabase(EntityManager $em)
-    {
-        if (self::$initialized) {
-            return;
-        }
-
-        $params = $this->getConnectionParams();
-
-        unset($params['dbname'], $params['path']);
-
-        $dbname = $em->getConnection()->getDatabase();
-        $tmpConn = DriverManager::getConnection($params, $em->getConfiguration());
-
-        if ($tmpConn->getDatabasePlatform()->supportsCreateDropDatabase()) {
-            $em->getConnection()->close();
-
-            $tmpConn->getSchemaManager()->dropAndCreateDatabase($dbname);
-        } else {
-            if (!in_array($dbname, $tmpConn->getSchemaManager()->listDatabases())) {
-                $tmpConn->getSchemaManager()->createDatabase($dbname);
-            }
-
-            $sm = $em->getConnection()->getSchemaManager();
-
-            $schema = $sm->createSchema();
-            $stmts = $schema->toDropSql($em->getConnection()->getDatabasePlatform());
-
-            foreach ($stmts as $stmt) {
-                $em->getConnection()->exec($stmt);
-            }
-        }
-
-        $tmpConn->close();
-
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
-
-        self::$initialized = true;
     }
 }

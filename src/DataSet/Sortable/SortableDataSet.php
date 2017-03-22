@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace AirMedia\Test\DataSet\Sortable;
 
-use PHPUnit_Extensions_Database_DataSet_IDataSet as IDataSet;
+use PHPUnit\DbUnit\DataSet\AbstractDataSet;
+use PHPUnit\DbUnit\DataSet\IDataSet;
 
 /**
  * SortableDataSet.
  *
  * @author Denis Vasilev
  */
-class SortableDataSet extends \PHPUnit_Extensions_Database_DataSet_AbstractDataSet
+class SortableDataSet extends AbstractDataSet
 {
     private $dataset;
     private $sortBy;

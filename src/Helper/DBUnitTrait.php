@@ -6,6 +6,8 @@ namespace AirMedia\Test\Helper;
 
 use AirMedia\Test\DataSet\DataSetBuilder;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\DbUnit\Operation\Factory;
+use PHPUnit\DbUnit\TestCaseTrait;
 
 /**
  * DBUnitTrait.
@@ -14,7 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 trait DBUnitTrait
 {
-    use \PHPUnit_Extensions_Database_TestCase_Trait;
+    use TestCaseTrait;
 
     abstract protected function getEntityManager(): EntityManagerInterface;
 
@@ -35,7 +37,7 @@ trait DBUnitTrait
      */
     protected function getSetUpOperation()
     {
-        return \PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT(true);
+        return Factory::CLEAN_INSERT(true);
     }
 
     /**

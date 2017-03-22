@@ -9,13 +9,13 @@
   },
   "require": {
     "php": "^7.0",
-    "phpunit/phpunit": "~5.0",
+    "phpunit/phpunit": "~6.0",
     "doctrine/orm": "~2.3"
   },
   "require-dev": {
-    "airmedia/php-cs-fixer-config": "^0.2.0",
+    "airmedia/php-cs-fixer-config": "^0.3.0",
     "doctrine/data-fixtures": "^1.2",
-    "phpunit/dbunit": "^2.0"
+    "phpunit/dbunit": "^3.0"
   },
   "suggest": {
     "doctrine/data-fixtures": "For loading ORM fixtures",

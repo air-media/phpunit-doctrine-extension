@@ -14,6 +14,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -112,9 +113,9 @@ abstract class ORMTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function onNotSuccessfulTest($e)
+    protected function onNotSuccessfulTest(\Throwable $e)
     {
-        if ($e instanceof \PHPUnit_Framework_AssertionFailedError) {
+        if ($e instanceof AssertionFailedError) {
             throw $e;
         }
 

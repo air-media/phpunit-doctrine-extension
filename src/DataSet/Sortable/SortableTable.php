@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace AirMedia\Test\DataSet\Sortable;
 
-use PHPUnit_Extensions_Database_DataSet_AbstractTable as AbstractTable;
-use PHPUnit_Extensions_Database_DataSet_ITable as ITable;
+use PHPUnit\DbUnit\DataSet\AbstractTable;
+use PHPUnit\DbUnit\DataSet\ITable;
 
 /**
  * SortableTable.

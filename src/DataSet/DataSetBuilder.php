@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace AirMedia\Test\DataSet;
 
-use PHPUnit_Extensions_Database_DataSet_DataSetFilter as DataSetFilter;
-use PHPUnit_Extensions_Database_DataSet_FlatXmlDataSet as FlatXmlDataSet;
-use PHPUnit_Extensions_Database_DataSet_IDataSet as IDataSet;
-use PHPUnit_Extensions_Database_DataSet_ReplacementDataSet as ReplacementDataSet;
+use PHPUnit\DbUnit\DataSet\Filter;
+use PHPUnit\DbUnit\DataSet\FlatXmlDataSet;
+use PHPUnit\DbUnit\DataSet\IDataSet;
+use PHPUnit\DbUnit\DataSet\ReplacementDataSet;
 
 /**
  * DataSetBuilder.
@@ -61,7 +61,7 @@ class DataSetBuilder
         }
 
         if (count($this->excludeColumns) > 0) {
-            $dataset = new DataSetFilter($dataset, $this->excludeColumns);
+            $dataset = new Filter($dataset, $this->excludeColumns);
         }
 
         if (count($this->fullReplacements) > 0) {

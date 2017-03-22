@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace AirMedia\Test\DataSet\Sortable;
 
-use PHPUnit_Extensions_Database_DataSet_ITableIterator as ITableIterator;
+use PHPUnit\DbUnit\DataSet\ITable;
+use PHPUnit\DbUnit\DataSet\ITableIterator;
 
 /**
  * SortableTableIterator.
@@ -27,7 +28,7 @@ class SortableTableIterator implements ITableIterator
      */
     public function current()
     {
-        /** @var \PHPUnit_Extensions_Database_DataSet_ITable $table */
+        /** @var ITable $table */
         $table = $this->innerIterator->current();
         $tableName = $table->getTableMetaData()->getTableName();
 

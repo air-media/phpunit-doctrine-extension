@@ -69,7 +69,9 @@ abstract class ORMTestCase extends TestCase
     {
         if (is_array(static::$customTypes)) {
             foreach (static::$customTypes as $name => $className) {
-                if (!Type::hasType($name)) {
+                if (Type::hasType($name)) {
+                    Type::overrideType($name, $className);
+                } else {
                     Type::addType($name, $className);
                 }
             }

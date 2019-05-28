@@ -14,12 +14,10 @@
   },
   "require-dev": {
     "airmedia/php-cs-fixer-config": "^0.3.0",
-    "doctrine/data-fixtures": "^1.2",
-    "phpunit/dbunit": "^3.0"
+    "doctrine/data-fixtures": "^1.2"
   },
   "suggest": {
-    "doctrine/data-fixtures": "For loading ORM fixtures",
-    "phpunit/dbunit": "To use DBUnitTrait"
+    "doctrine/data-fixtures": "For use ORM fixtures"
   },
   "scripts": {
     "cs-check": "php-cs-fixer fix -v --diff --dry-run",

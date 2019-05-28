@@ -104,43 +104,6 @@ class FooTestCase extends ORMTestCase
 }
 ```
 
-### [DBUnit](https://github.com/sebastianbergmann/dbunit)
-
-You may using trait `AirMedia\Test\Helper\DBUnitTrait` to enable support DBUnit.
-
-```php
-<?php
-
-use AirMedia\Test\ORMTestCase;
-use AirMedia\Test\Helper\DBUnitTrait;
-
-class FooTestCase extends ORMTestCase
-{
-    use DBUnitTrait {
-        setUp as traitSetUp;
-        tearDown as traitTearDown;
-    }
-    
-    protected function getDataSet()
-    {
-        return $this->createFlatXMLDataSet(__DIR__ . '/Fixtures/foo-seed.xml');
-    }
-    
-    protected function setUp()
-    {
-        $this->traitSetUp();
-    }
-    
-    protected function tearDown()
-    {
-        $this->traitTearDown();
-    }
-}
-```
-
-**WARNING:** You must override `setUp` and `tearDown` methods of the trait
-and invoke trait's methods insead of `parent::setUp` and `parent::tearDown`.
-
 ## License
 
 This package is licensed using the MIT License.

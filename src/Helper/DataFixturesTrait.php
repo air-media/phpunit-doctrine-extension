@@ -6,19 +6,19 @@ namespace AirMedia\Test\Helper;
 
 use AirMedia\Test\Purger\ORMPurger;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ORM\EntityManagerInterface;
+use function is_string;
 
-/**
- * DataFixturesTrait.
- *
- * @author Denis Vasilev
- */
 trait DataFixturesTrait
 {
+    /**
+     * @var bool
+     */
     private static $fixtureLoaded = false;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$fixtureLoaded = false;
 
@@ -27,7 +27,11 @@ trait DataFixturesTrait
 
     abstract protected function getEntityManager(): EntityManagerInterface;
 
-    public function loadFixtures(array $fixtures, $override = false)
+    /**
+     * @param FixtureInterface[]|string[] $fixtures
+     * @param bool                        $override
+     */
+    public function loadFixtures(array $fixtures, bool $override = false): void
     {
         if ($override) {
             self::$fixtureLoaded = false;

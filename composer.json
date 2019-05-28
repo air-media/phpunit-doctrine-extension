@@ -8,19 +8,19 @@
     "psr-4": { "AirMedia\\Test\\": "src" }
   },
   "require": {
-    "php": "^7.0",
+    "php": "^7.1",
     "phpunit/phpunit": "^6.0 || ^7.0",
     "doctrine/orm": "~2.3"
   },
   "require-dev": {
-    "airmedia/php-cs-fixer-config": "^0.3.0",
-    "doctrine/data-fixtures": "^1.2"
+    "doctrine/data-fixtures": "^1.2",
+    "airmedia/coding-standard": "^0.3.2"
   },
   "suggest": {
     "doctrine/data-fixtures": "For use ORM fixtures"
   },
   "scripts": {
-    "cs-check": "php-cs-fixer fix -v --diff --dry-run",
-    "cs-fix": "php-cs-fixer fix -v --diff"
+    "cs-check": "phpcs",
+    "cs-fix": "phpcbf"
   }
 }

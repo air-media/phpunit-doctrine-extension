@@ -14,22 +14,35 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
+use Throwable;
+use function array_keys;
+use function array_map;
+use function array_reverse;
+use function count;
+use function get_class;
+use function implode;
+use function is_array;
+use function is_object;
+use function is_scalar;
+use function strpos;
+use function sys_get_temp_dir;
+use function var_export;
+use const PHP_EOL;
 
 /**
  * ORMTestCase.
  *
  * Based on OrmFunctionalTestCase from https://github.com/doctrine/doctrine2
- *
- * @author Denis Vasilev
  */
 abstract class ORMTestCase extends TestCase
 {
     /**
      * A hash of custom type names and classes which should be registered.
      *
-     * @var array
+     * @var array<string,string>
      */
     protected static $customTypes = [];
 
@@ -115,7 +128,7 @@ abstract class ORMTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function onNotSuccessfulTest(\Throwable $e)
+    protected function onNotSuccessfulTest(Throwable $e)
     {
         if ($e instanceof AssertionFailedError) {
             throw $e;
@@ -129,7 +142,9 @@ abstract class ORMTestCase extends TestCase
                 $params = array_map(function ($p) {
                     if (is_object($p)) {
                         return get_class($p);
-                    } elseif (is_scalar($p)) {
+                    }
+
+                    if (is_scalar($p)) {
                         return "'" . $p . "'";
                     }
 
@@ -157,18 +172,18 @@ abstract class ORMTestCase extends TestCase
             $message = '[' . get_class($e) . '] ' . $e->getMessage() . PHP_EOL . PHP_EOL .
                 'With queries:' . PHP_EOL . $queries . PHP_EOL . 'Trace:' . PHP_EOL . $traceMsg;
 
-            throw new \Exception($message, (int)$e->getCode(), $e);
+            throw new Exception($message, (int)$e->getCode(), $e);
         }
 
         throw $e;
     }
 
-    protected function enableSqlLogger()
+    protected function enableSqlLogger(): void
     {
         $this->sqlLoggerStack->enabled = true;
     }
 
-    protected function disableSqlLogger()
+    protected function disableSqlLogger(): void
     {
         $this->sqlLoggerStack->enabled = false;
     }
@@ -178,12 +193,12 @@ abstract class ORMTestCase extends TestCase
         return $this->em;
     }
 
-    protected function getProxyNamespace()
+    protected function getProxyNamespace(): string
     {
         return 'DoctrineORMProxies';
     }
 
-    private function createEntityManager(SQLLogger $logger)
+    private function createEntityManager(SQLLogger $logger): EntityManager
     {
         if (null === self::$metadataCacheImpl) {
             self::$metadataCacheImpl = new ArrayCache();

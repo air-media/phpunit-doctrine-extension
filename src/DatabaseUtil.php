@@ -7,17 +7,24 @@ namespace AirMedia\Test;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
+use function in_array;
+use function unlink;
 
-/**
- * DatabaseUtil.
- *
- * @author Denis Vasilev
- */
 class DatabaseUtil
 {
+    /**
+     * @var bool
+     */
     private static $initialized = false;
+
+    /**
+     * @var bool
+     */
     private static $schemaCreated = false;
 
+    /**
+     * @return mixed[]
+     */
     public static function getConnectionParams(): array
     {
         if (isset(
@@ -61,7 +68,7 @@ class DatabaseUtil
         return $params;
     }
 
-    public static function initDatabase()
+    public static function initDatabase(): void
     {
         if (self::$initialized) {
             return;
@@ -99,7 +106,7 @@ class DatabaseUtil
         self::$initialized = true;
     }
 
-    public static function setUpSchema(EntityManager $em)
+    public static function setUpSchema(EntityManager $em): void
     {
         if (self::$schemaCreated) {
             return;

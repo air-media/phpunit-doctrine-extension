@@ -9,38 +9,51 @@ use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\DataFixtures\Loader;
 use Doctrine\ORM\EntityManagerInterface;
+use function count;
 use function is_string;
 
 trait DataFixturesTrait
 {
     /**
+     * @var FixtureInterface[]|string[]
+     */
+    public static $sharedFixtures = [];
+
+    /**
      * @var bool
      */
-    private static $fixtureLoaded = false;
+    private static $sharedFixturesLoaded = false;
 
     public static function setUpBeforeClass(): void
     {
-        self::$fixtureLoaded = false;
+        self::$sharedFixturesLoaded = false;
 
         parent::setUpBeforeClass();
     }
 
     abstract protected function getEntityManager(): EntityManagerInterface;
 
-    /**
-     * @param FixtureInterface[]|string[] $fixtures
-     * @param bool                        $override
-     */
-    public function loadFixtures(array $fixtures, bool $override = false): void
+    protected function setUp(): void
     {
-        if ($override) {
-            self::$fixtureLoaded = false;
-        }
+        parent::setUp();
 
-        if (self::$fixtureLoaded) {
+        if (self::$sharedFixturesLoaded) {
             return;
         }
 
+        if (count(self::$sharedFixtures) > 0) {
+            $this->loadFixtures(self::$sharedFixtures);
+        }
+
+        self::$sharedFixturesLoaded = true;
+    }
+
+    /**
+     * @param FixtureInterface[]|string[] $fixtures
+     * @param bool                        $append
+     */
+    public function loadFixtures(array $fixtures, bool $append = false): void
+    {
         $loader = new Loader();
 
         foreach ($fixtures as $fixture) {
@@ -51,14 +64,17 @@ trait DataFixturesTrait
             $loader->addFixture($fixture);
         }
 
-        $em = $this->getEntityManager();
+        $executor = $this->getExecutor($this->getEntityManager());
+        $executor->execute($loader->getFixtures(), $append);
 
+        self::$sharedFixturesLoaded = true;
+    }
+
+    protected function getExecutor(EntityManagerInterface $em): ORMExecutor
+    {
         $purger = new ORMPurger($em);
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
 
-        $executor = new ORMExecutor($em, $purger);
-        $executor->execute($loader->getFixtures());
-
-        self::$fixtureLoaded = true;
+        return new ORMExecutor($em, $purger);
     }
 }

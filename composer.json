@@ -9,7 +9,7 @@
   },
   "require": {
     "php": "^7.1",
-    "phpunit/phpunit": "^6.0 || ^7.0",
+    "phpunit/phpunit": "^6.0 || ^7.0 || ^8.0",
     "doctrine/orm": "~2.3"
   },
   "require-dev": {

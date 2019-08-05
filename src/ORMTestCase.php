@@ -78,7 +78,7 @@ abstract class ORMTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (is_array(static::$customTypes)) {
             foreach (static::$customTypes as $name => $className) {
@@ -96,7 +96,7 @@ abstract class ORMTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -111,7 +111,7 @@ abstract class ORMTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -128,7 +128,7 @@ abstract class ORMTestCase extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function onNotSuccessfulTest(Throwable $e)
+    protected function onNotSuccessfulTest(Throwable $e): void
     {
         if ($e instanceof AssertionFailedError) {
             throw $e;

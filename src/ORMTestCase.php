@@ -51,21 +51,21 @@ abstract class ORMTestCase extends TestCase
     /**
      * @var Connection|null
      */
-    private static $sharedConn = null;
+    private static $sharedConn;
 
     /**
      * The metadata cache shared between all functional tests.
      *
      * @var Cache|null
      */
-    private static $metadataCacheImpl = null;
+    private static $metadataCacheImpl;
 
     /**
      * The query cache shared between all functional tests.
      *
      * @var Cache|null
      */
-    private static $queryCacheImpl = null;
+    private static $queryCacheImpl;
 
     /**
      * @var bool

@@ -6,6 +6,7 @@ namespace AirMedia\Test;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\EventManager;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
@@ -198,6 +199,11 @@ abstract class ORMTestCase extends TestCase
         return 'DoctrineORMProxies';
     }
 
+    protected function createEventManager(): EventManager
+    {
+        return new EventManager();
+    }
+
     private function createEntityManager(SQLLogger $logger): EntityManager
     {
         if (null === self::$metadataCacheImpl) {
@@ -209,7 +215,11 @@ abstract class ORMTestCase extends TestCase
         }
 
         if (null !== self::$sharedConn) {
-            $em = EntityManager::create(self::$sharedConn, self::$sharedConn->getConfiguration());
+            $em = EntityManager::create(
+                self::$sharedConn,
+                self::$sharedConn->getConfiguration(),
+                $this->createEventManager()
+            );
         } else {
             $config = new Configuration();
             $config->setAutoGenerateProxyClasses(true);
@@ -219,7 +229,7 @@ abstract class ORMTestCase extends TestCase
             $config->setQueryCacheImpl(self::$queryCacheImpl);
             $config->setMetadataDriverImpl($this->createMappingDriver($config));
 
-            $em = EntityManager::create(DatabaseUtil::getConnectionParams(), $config);
+            $em = EntityManager::create(DatabaseUtil::getConnectionParams(), $config, $this->createEventManager());
             self::$sharedConn = $em->getConnection();
         }
 

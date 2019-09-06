@@ -109,9 +109,9 @@ abstract class ORMTestCase extends TestCase
         $this->sqlLoggerStack = new DebugStack();
         $this->sqlLoggerStack->enabled = false;
 
-        $this->em = $this->createEntityManager($this->sqlLoggerStack);
-
         DatabaseUtil::initDatabase();
+
+        $this->em = $this->createEntityManager($this->sqlLoggerStack);
 
         if (!self::$schemaCreated) {
             $this->setUpSchema();

@@ -204,6 +204,12 @@ abstract class ORMTestCase extends TestCase
         return new EventManager();
     }
 
+    // phpcs:disable
+    protected function onSetUpSchema(EntityManagerInterface $em): void
+    {
+        // phpcs:enable
+    }
+
     private function createEntityManager(SQLLogger $logger): EntityManager
     {
         if (null === self::$metadataCacheImpl) {
@@ -236,7 +242,9 @@ abstract class ORMTestCase extends TestCase
         $em->getConfiguration()->setSQLLogger($logger);
 
         DatabaseUtil::initDatabase();
-        DatabaseUtil::setUpSchema($em);
+        DatabaseUtil::setUpSchema($em, function () use ($em): void {
+            $this->onSetUpSchema($em);
+        });
 
         if (is_array(static::$customTypes) && count(static::$customTypes) > 0) {
             $platform = $em->getConnection()->getDatabasePlatform();

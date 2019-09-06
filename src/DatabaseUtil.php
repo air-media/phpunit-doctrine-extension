@@ -106,7 +106,7 @@ class DatabaseUtil
         self::$initialized = true;
     }
 
-    public static function setUpSchema(EntityManager $em): void
+    public static function setUpSchema(EntityManager $em, ?callable $onSetUp = null): void
     {
         if (self::$schemaCreated) {
             return;
@@ -114,6 +114,10 @@ class DatabaseUtil
 
         $schemaTool = new SchemaTool($em);
         $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
+
+        if (null !== $onSetUp) {
+            $onSetUp();
+        }
 
         self::$schemaCreated = true;
     }

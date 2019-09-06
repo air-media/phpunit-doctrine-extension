@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace AirMedia\Test;
 
 use Doctrine\DBAL\DriverManager;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
 use function in_array;
 use function unlink;
 
@@ -16,11 +14,6 @@ class DatabaseUtil
      * @var bool
      */
     private static $initialized = false;
-
-    /**
-     * @var bool
-     */
-    private static $schemaCreated = false;
 
     /**
      * @return mixed[]
@@ -104,21 +97,5 @@ class DatabaseUtil
         $tmpConn->close();
 
         self::$initialized = true;
-    }
-
-    public static function setUpSchema(EntityManager $em, ?callable $onSetUp = null): void
-    {
-        if (self::$schemaCreated) {
-            return;
-        }
-
-        $schemaTool = new SchemaTool($em);
-        $schemaTool->createSchema($em->getMetadataFactory()->getAllMetadata());
-
-        if (null !== $onSetUp) {
-            $onSetUp();
-        }
-
-        self::$schemaCreated = true;
     }
 }

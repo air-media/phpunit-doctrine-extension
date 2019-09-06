@@ -15,6 +15,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\SchemaTool;
 use Exception;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
@@ -67,6 +68,11 @@ abstract class ORMTestCase extends TestCase
     private static $queryCacheImpl = null;
 
     /**
+     * @var bool
+     */
+    private static $schemaCreated = false;
+
+    /**
      * @var DebugStack
      */
     protected $sqlLoggerStack;
@@ -105,6 +111,14 @@ abstract class ORMTestCase extends TestCase
         $this->sqlLoggerStack->enabled = false;
 
         $this->em = $this->createEntityManager($this->sqlLoggerStack);
+
+        DatabaseUtil::initDatabase();
+
+        if (!self::$schemaCreated) {
+            $this->setUpSchema();
+
+            self::$schemaCreated = true;
+        }
 
         $this->enableSqlLogger();
     }
@@ -179,6 +193,12 @@ abstract class ORMTestCase extends TestCase
         throw $e;
     }
 
+    protected function setUpSchema(): void
+    {
+        $schemaTool = new SchemaTool($this->em);
+        $schemaTool->createSchema($this->em->getMetadataFactory()->getAllMetadata());
+    }
+
     protected function enableSqlLogger(): void
     {
         $this->sqlLoggerStack->enabled = true;
@@ -202,12 +222,6 @@ abstract class ORMTestCase extends TestCase
     protected function createEventManager(): EventManager
     {
         return new EventManager();
-    }
-
-    // phpcs:disable
-    protected function onSetUpSchema(EntityManagerInterface $em): void
-    {
-        // phpcs:enable
     }
 
     private function createEntityManager(SQLLogger $logger): EntityManager
@@ -240,11 +254,6 @@ abstract class ORMTestCase extends TestCase
         }
 
         $em->getConfiguration()->setSQLLogger($logger);
-
-        DatabaseUtil::initDatabase();
-        DatabaseUtil::setUpSchema($em, function () use ($em): void {
-            $this->onSetUpSchema($em);
-        });
 
         if (is_array(static::$customTypes) && count(static::$customTypes) > 0) {
             $platform = $em->getConnection()->getDatabasePlatform();

@@ -67,14 +67,14 @@ abstract class ORMTestCase extends TestCase
     private static $queryCacheImpl = null;
 
     /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
      * @var DebugStack
      */
     protected $sqlLoggerStack;
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     /**
      * {@inheritdoc}

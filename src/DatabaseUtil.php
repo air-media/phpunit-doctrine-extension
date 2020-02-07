@@ -20,14 +20,16 @@ class DatabaseUtil
      */
     public static function getConnectionParams(): array
     {
-        if (isset(
-            $GLOBALS['db_type'],
-            $GLOBALS['db_username'],
-            $GLOBALS['db_password'],
-            $GLOBALS['db_host'],
-            $GLOBALS['db_name'],
-            $GLOBALS['db_port']
-        )) {
+        if (
+            isset(
+                $GLOBALS['db_type'],
+                $GLOBALS['db_username'],
+                $GLOBALS['db_password'],
+                $GLOBALS['db_host'],
+                $GLOBALS['db_name'],
+                $GLOBALS['db_port']
+            )
+        ) {
             $params = [
                 'driver' => $GLOBALS['db_type'],
                 'user' => $GLOBALS['db_username'],

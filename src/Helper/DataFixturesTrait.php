@@ -17,7 +17,6 @@ trait DataFixturesTrait
 
     /**
      * @param FixtureInterface[]|string[] $fixtures
-     * @param bool                        $append
      */
     public function loadFixtures(array $fixtures, bool $append = false): void
     {

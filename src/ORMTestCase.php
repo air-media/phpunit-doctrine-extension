@@ -129,7 +129,7 @@ abstract class ORMTestCase extends TestCase
     {
         parent::tearDown();
 
-        if (null === $this->em) {
+        if ($this->em === null) {
             return;
         }
 
@@ -153,7 +153,7 @@ abstract class ORMTestCase extends TestCase
             $i = count($this->sqlLoggerStack->queries);
 
             foreach (array_reverse($this->sqlLoggerStack->queries) as $query) {
-                $params = array_map(function ($p) {
+                $params = array_map(static function ($p) {
                     if (is_object($p)) {
                         return get_class($p);
                     }
@@ -220,15 +220,15 @@ abstract class ORMTestCase extends TestCase
 
     private function createEntityManager(SQLLogger $logger): EntityManager
     {
-        if (null === self::$metadataCacheImpl) {
+        if (self::$metadataCacheImpl === null) {
             self::$metadataCacheImpl = new ArrayCache();
         }
 
-        if (null === self::$queryCacheImpl) {
+        if (self::$queryCacheImpl === null) {
             self::$queryCacheImpl = new ArrayCache();
         }
 
-        if (null !== self::$sharedConn) {
+        if (self::$sharedConn !== null) {
             $em = EntityManager::create(self::$sharedConn, self::$sharedConn->getConfiguration());
         } else {
             $config = new Configuration();

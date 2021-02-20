@@ -41,11 +41,21 @@ use const PHP_EOL;
 abstract class ORMTestCase extends TestCase
 {
     /**
+     * @var DebugStack
+     */
+    protected $sqlLoggerStack;
+
+    /**
      * A hash of custom type names and classes which should be registered.
      *
      * @var array<string,string>
      */
     protected static $customTypes = [];
+
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
     /**
      * @var Connection|null
@@ -71,15 +81,7 @@ abstract class ORMTestCase extends TestCase
      */
     private static $schemaCreated = false;
 
-    /**
-     * @var DebugStack
-     */
-    protected $sqlLoggerStack;
-
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    abstract protected function createMappingDriver(Configuration $config): MappingDriver;
 
     /**
      * {@inheritdoc}
@@ -96,8 +98,6 @@ abstract class ORMTestCase extends TestCase
             }
         }
     }
-
-    abstract protected function createMappingDriver(Configuration $config): MappingDriver;
 
     /**
      * {@inheritdoc}
@@ -166,7 +166,7 @@ abstract class ORMTestCase extends TestCase
                 }, $query['params'] ?: []);
 
                 $queries .= $i . ". SQL: '" . $query['sql'] . "' Params: " . implode(', ', $params) . PHP_EOL;
-                --$i;
+                $i--;
             }
 
             $trace = $e->getTrace();

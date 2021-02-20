@@ -8,5 +8,7 @@
 
   <file>src</file>
 
-  <rule ref="Airmedia" />
+  <rule ref="Airmedia">
+    <exclude name="SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingNativeTypeHint" />
+  </rule>
 </ruleset>

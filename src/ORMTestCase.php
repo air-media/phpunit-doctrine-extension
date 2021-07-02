@@ -218,14 +218,19 @@ abstract class ORMTestCase extends TestCase
         return 'DoctrineORMProxies';
     }
 
+    protected static function createCache(): Cache
+    {
+        return new ArrayCache();
+    }
+
     private function createEntityManager(SQLLogger $logger): EntityManager
     {
         if (self::$metadataCacheImpl === null) {
-            self::$metadataCacheImpl = new ArrayCache();
+            self::$metadataCacheImpl = self::createCache();
         }
 
         if (self::$queryCacheImpl === null) {
-            self::$queryCacheImpl = new ArrayCache();
+            self::$queryCacheImpl = self::createCache();
         }
 
         if (self::$sharedConn !== null) {

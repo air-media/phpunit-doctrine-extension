@@ -226,11 +226,11 @@ abstract class ORMTestCase extends TestCase
     private function createEntityManager(SQLLogger $logger): EntityManager
     {
         if (self::$metadataCacheImpl === null) {
-            self::$metadataCacheImpl = self::createCache();
+            self::$metadataCacheImpl = static::createCache();
         }
 
         if (self::$queryCacheImpl === null) {
-            self::$queryCacheImpl = self::createCache();
+            self::$queryCacheImpl = static::createCache();
         }
 
         if (self::$sharedConn !== null) {
